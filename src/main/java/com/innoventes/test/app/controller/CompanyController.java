@@ -53,7 +53,7 @@ public class CompanyController {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 		return ResponseEntity.status(HttpStatus.OK).location(location).body(companyDTOList);
 	}
-
+	//adding new Data
 	@PostMapping("/companies")
 	public ResponseEntity<CompanyDTO> addCompany(@Valid @RequestBody CompanyDTO companyDTO)
 			throws ValidationException {
