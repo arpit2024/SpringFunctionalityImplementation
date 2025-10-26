@@ -137,10 +137,12 @@ public ResponseEntity<Company> getCompany(
 If code is missing, "AB12E" will be used.
 
 ✅ Summary Table
-Setting	Behavior
-@RequestParam("code")	Required by default — error if missing
-@RequestParam(value = "code", required = false)	Optional — passes null if missing
-@RequestParam(value = "code", defaultValue = "X")	Optional — uses "X" if missing
+| Setting                                             | Behavior                               |
+| --------------------------------------------------- | -------------------------------------- |
+| `@RequestParam("code")`                             | Required by default — error if missing |
+| `@RequestParam(value = "code", required = false)`   | Optional — passes `null` if missing    |
+| `@RequestParam(value = "code", defaultValue = "X")` | Optional — uses `"X"` if missing       |
+
 
 📊 4. Query Parameter Flow Diagram
                 GET /api/v1/companies?code=IJ90E
@@ -195,9 +197,10 @@ Setting	Behavior
       └────────────────┘  └────────────────────┘  └────────────────────────┘
 
 ✅ 6. When to Use @PathVariable vs @RequestParam
-Use Case	Annotation	Example URL	Example Code
-To identify a specific resource (required part of path)	@PathVariable	/api/v1/companies/10	@GetMapping("/companies/{id}")
-To filter or search results (optional or multiple params)	@RequestParam	/api/v1/companies?code=IJ90E	@GetMapping("/companies") with @RequestParam
+| Use Case                                                  | Annotation      | Example URL                    | Example Code                                     |
+| --------------------------------------------------------- | --------------- | ------------------------------ | ------------------------------------------------ |
+| To identify a specific resource (required part of path)   | `@PathVariable` | `/api/v1/companies/10`         | `@GetMapping("/companies/{id}")`                 |
+| To filter or search results (optional or multiple params) | `@RequestParam` | `/api/v1/companies?code=IJ90E` | `@GetMapping("/companies")` with `@RequestParam` |
 
 Summary:
 
@@ -213,8 +216,9 @@ Summary:
 5. Avoid regex mappings unless necessary — keep URLs predictable and clean.
 
 🧠 8. Quick Reference Summary
-Concept	Default Behavior	Common Fix
-@RequestParam	Required = true	Add required = false
-Missing query param	Throws 400	Add defaultValue or handle null
-Two @GetMapping("/{var}")	Ambiguous error	Use distinct paths or query params
-Fetch by ID & Code	Separate endpoints or query params	/companies/id/{id} or /companies?code=X
+| Concept                     | Default Behavior                   | Common Fix                                  |
+| --------------------------- | ---------------------------------- | ------------------------------------------- |
+| `@RequestParam`             | Required = true                    | Add `required = false`                      |
+| Missing query param         | Throws 400                         | Add `defaultValue` or handle `null`         |
+| Two `@GetMapping("/{var}")` | Ambiguous error                    | Use distinct paths or query params          |
+| Fetch by ID & Code          | Separate endpoints or query params | `/companies/id/{id}` or `/companies?code=X` |
