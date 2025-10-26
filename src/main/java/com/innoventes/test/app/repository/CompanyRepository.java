@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
+        //Task No 4
         @Query("SELECT c FROM Company c WHERE c.companyCode = :code")
         Company findCompanyByRecord(@Param("code") String code);
 

@@ -30,12 +30,15 @@ public class CompanyServiceImpl implements CompanyService {
 		companyRepository.findAll().forEach(companyList::add);
 		return companyList;
 	}
+
+	//Task No 3
 	@Override
 	public Company getCompanyById(Long id){
 		Company  data= companyRepository.getById(id);
 		return data;
 	}
 
+	//Task No 4
 	@Override
 	public Company getCompanyByRecord(String code){
 		Company data=companyRepository.findCompanyByRecord(code);

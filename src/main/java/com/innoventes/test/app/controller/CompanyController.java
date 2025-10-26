@@ -54,6 +54,7 @@ public class CompanyController {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 		return ResponseEntity.status(HttpStatus.OK).location(location).body(companyDTOList);
 	}
+	//Task No 3
 	@GetMapping("/companies/{id}")
 	public ResponseEntity<CompanyDTO> getCompanyById(@PathVariable (value = "id")Long id){
 		Company companyDetails=companyService.getCompanyById(id);
@@ -63,6 +64,7 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).body(dtoDetails);
 	}
 
+	//Task No 4
 	@GetMapping("/company/{code}")
 	public ResponseEntity<CompanyDTO> getCompanyByRecord(@PathVariable(value = "code") String code){
 		Company cmpny=companyService.getCompanyByRecord(code);

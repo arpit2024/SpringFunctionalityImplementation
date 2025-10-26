@@ -16,7 +16,9 @@ public interface CompanyService {
 	
 	void deleteCompany(Long id);
 
+	//Task No 3
 	Company getCompanyById(Long id);
 
+	//Task No 4
 	Company getCompanyByRecord(String code);
 }
