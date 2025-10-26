@@ -137,91 +137,84 @@ public ResponseEntity<Company> getCompany(
 If code is missing, "AB12E" will be used.
 
 ✅ Summary Table
-                Setting	                                                                                                Behavior
-@RequestParam("code")	                                                            Required by default — error if missing
-@RequestParam(value = "code", required = false)                 	Optional — passes null if missing
-@RequestParam(value = "code", defaultValue = "X")	            Optional — uses "X" if missing
-
+Setting	Behavior
+@RequestParam("code")	Required by default — error if missing
+@RequestParam(value = "code", required = false)	Optional — passes null if missing
+@RequestParam(value = "code", defaultValue = "X")	Optional — uses "X" if missing
 
 📊 4. Query Parameter Flow Diagram
-
-                        GET /api/v1/companies?code=IJ90E
-                                                    |
-                                                    v
-                                @RequestParam("code")
-                                     /                         \
-                                   /                             \
-                        required?            optional (required=false)
-                              |                                     |
-                              v                                    v
-                        Present?                       null if missing
-                         /             \
-                      /                  \
-                  yes                   no
-                  |                          |
-          value passed       400 Bad Request
+                GET /api/v1/companies?code=IJ90E
+                                |
+                                v
+                      @RequestParam("code")
+                               / \
+                              /   \
+                        required?   optional (required=false)
+                              |           |
+                              v           v
+                     Present?             null if missing
+                      /   \
+                     /     \
+                  yes       no
+                  |          |
+          value passed     400 Bad Request
           to method
 
-
 🔁 5. Multiple Optional Query Parameters Flow
+    @GetMapping("/api/v1/companies")
+    public ResponseEntity<Company> getCompany(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String code) {
+        ...
+    }
 
-        @GetMapping("/api/v1/companies")
-        public ResponseEntity<Company> getCompany(
-                @RequestParam(required = false) Long id,
-                @RequestParam(required = false) String code) {
-            ...
-        }
-
-                                  ┌───────────────────────────────┐
-                                  │  Incoming GET Request          │
-                                  │  /api/v1/companies?...         │
-                                  └───────────────────────────────┘
-                                                                      │
-                                                                     ▼
-                           ┌────────────────────────────────────────┐
-                           │  Controller with @RequestParam fields  │
-                           │  id (Long) and code (String)           │
-                           └────────────────────────────────────────┘
-                                                                      │
-                                                                     ▼
-                                ┌────────────────────────────────┐
-                                │  Which query params are present?│
-                                └────────────────────────────────┘
-                                                  /                     |                      \
-                                                 /                      |                        \
-                                                /                       |                          \
-                             id present ✅      code present ✅     none present ❌
-                                       |                                  |                             |
-                                        v                               v                             v
-              ┌────────────────┐  ┌────────────────────┐  ┌────────────────────────┐
-                   │ Find by ID in  │           │ Find by Company    │        │ Return 400 Bad Request │
-                    │ repository     │           │ Code in repository  │          │ or Default Response    │
-              └────────────────┘  └────────────────────┘  └────────────────────────┘
-
+                          ┌───────────────────────────────┐
+                          │  Incoming GET Request          │
+                          │  /api/v1/companies?...         │
+                          └───────────────────────────────┘
+                                         │
+                                         ▼
+                   ┌────────────────────────────────────────┐
+                   │  Controller with @RequestParam fields  │
+                   │  id (Long) and code (String)           │
+                   └────────────────────────────────────────┘
+                                         │
+                                         ▼
+                        ┌────────────────────────────────┐
+                        │  Which query params are present?│
+                        └────────────────────────────────┘
+                          /            |             \
+                         /             |              \
+                        /              |               \
+             id present ✅     code present ✅     none present ❌
+                |                  |                    |
+                v                  v                    v
+      ┌────────────────┐  ┌────────────────────┐  ┌────────────────────────┐
+      │ Find by ID in  │  │ Find by Company    │  │ Return 400 Bad Request │
+      │ repository     │  │ Code in repository │  │ or Default Response    │
+      └────────────────┘  └────────────────────┘  └────────────────────────┘
 
 ✅ 6. When to Use @PathVariable vs @RequestParam
-Use Case	                                                                                     Annotation	                                        Example URL	                                                     Example Code
-To identify a specific resource (required part of path)     	@PathVariable	                           /api/v1/companies/10	                                @GetMapping("/companies/{id}")
-To filter or search results (optional or multiple params)	@RequestParam	                        /api/v1/companies?code=IJ90E	            @GetMapping("/companies") with @RequestParam
+Use Case	Annotation	Example URL	Example Code
+To identify a specific resource (required part of path)	@PathVariable	/api/v1/companies/10	@GetMapping("/companies/{id}")
+To filter or search results (optional or multiple params)	@RequestParam	/api/v1/companies?code=IJ90E	@GetMapping("/companies") with @RequestParam
 
 Summary:
 
-Use @PathVariable when the value is part of the URI structure (like an ID).
-
-Use @RequestParam for filters, searches, or optional fields.
-
+1. Use @PathVariable when the value is part of the URI structure (like an ID).
+2. Use @RequestParam for filters, searches, or optional fields.
 
 ✅ 7. Recommended Best Practices
+
 1. Use distinct path segments (/id/{id}, /code/{code}) to avoid ambiguity.
 2. Prefer query parameters for optional search inputs.
 3. Always use required = false when a parameter may not be provided.
 4. Handle null or missing values gracefully.
 5. Avoid regex mappings unless necessary — keep URLs predictable and clean.
 
-
 🧠 8. Quick Reference Summary
-Concept	                                               Default Behavior	                                                  Common Fix
-@RequestParam	                                    Required = true	                                             Add required = false
-Missing query param	                            Throws 400                              	                     Add defaultValue or handle null
-Two @GetMapping("/{var}")	                Ambiguous error	                                             Use distinct paths or query params
-Fetch by ID & Code	                                Separate endpoints or query params	         /companies/id/{id} or /companies?code=X
+Concept	Default Behavior	Common Fix
+@RequestParam	Required = true	Add required = false
+Missing query param	Throws 400	Add defaultValue or handle null
+Two @GetMapping("/{var}")	Ambiguous error	Use distinct paths or query params
+Fetch by ID & Code	Separate endpoints or query params	/companies/id/{id} or /companies?code=X
