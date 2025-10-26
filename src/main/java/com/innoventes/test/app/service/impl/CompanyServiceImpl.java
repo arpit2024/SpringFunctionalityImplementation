@@ -2,6 +2,7 @@ package com.innoventes.test.app.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,18 @@ public class CompanyServiceImpl implements CompanyService {
 		ArrayList<Company> companyList = new ArrayList<Company>();
 		companyRepository.findAll().forEach(companyList::add);
 		return companyList;
+	}
+	@Override
+	public Company getCompanyById(Long id){
+		Company  data= companyRepository.getById(id);
+		return data;
+	}
+
+	@Override
+	public Company getCompanyByRecord(String code){
+		Company data=companyRepository.findCompanyByRecord(code);
+
+		return data;
 	}
 
 	@Override

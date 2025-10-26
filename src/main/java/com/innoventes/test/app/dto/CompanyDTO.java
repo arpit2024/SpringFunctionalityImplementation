@@ -18,6 +18,8 @@ public class CompanyDTO {
 	private String email;
 
 	private Integer strength;
-	
+
 	private String webSiteURL;
+
+
 }

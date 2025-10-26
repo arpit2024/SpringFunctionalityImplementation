@@ -53,7 +53,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler{
 		return buildResponseEntity(messageNotReadableExceptionDetails);
 	}
 
-	@Override
+
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ExceptionDetails exceptionDetails = new ExceptionDetails(status, exception,
@@ -61,7 +61,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler{
 		return buildResponseEntity(exceptionDetails);
 	}
 
-	@Override
+
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails(status, exception,
@@ -71,7 +71,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler{
 		return buildResponseEntity(validationExceptionDetails);
 	}
 
-	@Override
+
 	protected ResponseEntity<Object> handleBindException(BindException exception,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails(status, exception,

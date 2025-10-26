@@ -3,8 +3,9 @@ package com.innoventes.test.app.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -53,6 +54,55 @@ public class CompanyController {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 		return ResponseEntity.status(HttpStatus.OK).location(location).body(companyDTOList);
 	}
+	@GetMapping("/companies/{id}")
+	public ResponseEntity<CompanyDTO> getCompanyById(@PathVariable (value = "id")Long id){
+		Company companyDetails=companyService.getCompanyById(id);
+
+		CompanyDTO dtoDetails=companyMapper.getCompanyDTO(companyDetails);
+
+		return ResponseEntity.status(HttpStatus.OK).body(dtoDetails);
+	}
+
+	@GetMapping("/company/{code}")
+	public ResponseEntity<CompanyDTO> getCompanyByRecord(@PathVariable(value = "code") String code){
+		Company cmpny=companyService.getCompanyByRecord(code);
+		CompanyDTO cdto=companyMapper.getCompanyDTO(cmpny);
+
+		return ResponseEntity.status(HttpStatus.OK).body(cdto);
+	}
+/*
+ Notes: - Due to both getCompanyById and getCompanyByRecord  mappings use the same URL pattern (/api/v1/companies/{something})
+so when you hit /api/v1/companies/IJ90E, Spring can’t tell which one to use:
+Should it try to parse IJ90E as a Long?
+Or should it treat it as a String?
+Hence, the IllegalStateException: Ambiguous handler methods mapped.
+
+so solution 1- change the url prefix
+Solution 2-
+Use Query Parameters (Cleaner URLs)
+If you prefer to keep /api/v1/companies as the base path:
+
+@GetMapping("/api/v1/companies")
+public ResponseEntity<Company> getCompany(
+        @RequestParam(required = false) Long id,
+        @RequestParam(required = false) String code) {
+
+    Company company = null;
+
+    if (id != null) {
+        company = companyService.findById(id);
+    } else if (code != null) {
+        company = companyService.findCompanyByRecord(code);
+    }
+    return company != null ? ResponseEntity.ok(company) : ResponseEntity.notFound().build();
+}
+
+Now you can call:
+/api/v1/companies?id=1
+/api/v1/companies?code=IJ90E
+
+*/
+
 	//adding new Data
 	@PostMapping("/companies")
 	public ResponseEntity<CompanyDTO> addCompany(@Valid @RequestBody CompanyDTO companyDTO)
